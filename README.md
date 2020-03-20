@@ -1,4 +1,4 @@
-# School-Hydration
+# Fast Deploy Microsoft Teams for Education
 
 These set of scripts are designed to help your school quickly get up and running using Microsoft Teams. There is one script for creating Office 365 accounts for students and teachers. Another script for creating a Teams site for each class and assigning the teacher to it, and a final script for assigning the students to their classes.
 
