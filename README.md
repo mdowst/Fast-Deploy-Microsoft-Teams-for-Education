@@ -1,6 +1,8 @@
 # Fast Deploy Microsoft Teams for Education
 
-These set of scripts are designed to help your school quickly get up and running using Microsoft Teams. There is one script for creating Office 365 accounts for students and teachers. Another script for creating a Teams site for each class and assigning the teacher to it, and a final script for assigning the students to their classes.
+These set of scripts are designed to help small schools, co-ops, and tutors quickly get up and running using Microsoft Teams. If you are a large school with your own IT staff, you are welcome to use this as well, but the office [School Data Sync](https://sds.microsoft.com/) from Microsoft might be a better option for you. 
+
+This solution will help you creating logins and emails for all students and teachers, create a Teams site for each class, and assigning the teacher and students to the correct classes.
 
 I realize that not everyone who is in need of the solution, is a PowerShell guru. So I have provided detailed steps below on how you can implement this for your school. If you have any questions or issues with this script, please feel free to reach out to me on Twitter [@mdowst](https://twitter.com/MDowst).
 
@@ -8,6 +10,8 @@ I realize that not everyone who is in need of the solution, is a PowerShell guru
 - Global admin rights to the Office 365 tenant
 - [AzureAD PowerShell Module](https://www.powershellgallery.com/packages/AzureAD/2.0.2.4)
 - [MicrosoftTeams PowerShell Module](https://www.powershellgallery.com/packages/MicrosoftTeams/1.0.5)
+
+Don't worry if you don't know what this means. Instructions for installing them are provided in the detail instructions below.
 
 # Importing Students and Teachers
 
@@ -38,7 +42,7 @@ To assign students to classes run the **Assign-Classes.ps1**, passing in the pat
 3. When the download completed extract the zip file
 
 ## Install Required Modules
-1. Open PowerShell console
+1. Open PowerShell console (click Start > type in "PowerShell" > hit enter)
 2. Install the Azure AD module using the command:
 ```powershell
 Install-Module AzureAD -Scope CurrentUser
