@@ -4,6 +4,15 @@ Param(
     [parameter(Mandatory=$true)]
     [String]$csvPath
 )
+if(-not (Get-Module MicrosoftTeams)){
+    if(Get-Module MicrosoftTeams -ListAvailable){
+        Import-Module MicrosoftTeams
+    } else {
+        throw "The MicrosoftTeams module is required for this script. You can install the module by running the command 'Install-Module MicrosoftTeams -Scope CurrentUser'"
+    }
+}
+
+Connect-MicrosoftTeams | Out-Null
 
 $Assignments = Import-Csv -Path $csvPath
 

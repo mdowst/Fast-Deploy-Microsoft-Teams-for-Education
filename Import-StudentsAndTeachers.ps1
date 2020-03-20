@@ -8,6 +8,13 @@ Param(
     [String]$defaultPassword
 )
 
+if(-not (Get-Module AzureAD)){
+    if(Get-Module AzureAD -ListAvailable){
+        Import-Module AzureAD
+    } else {
+        throw "The AzureAD module is required for this script. You can install the module by running the command 'Install-Module AzureAD -Scope CurrentUser'"
+    }
+}
 
 $UserImport = Import-Csv -Path $csvPath
 
@@ -17,7 +24,7 @@ if($CheckRoles){
 }
 
 # Connect to AzureAD
-Connect-AzureAD
+Connect-AzureAD | Out-Null
 
 # set the domain for the username
 $script:TenantDomain = Get-AzureADTenantDetail | Select-Object -ExpandProperty VerifiedDomains | Select-Object -Property Name, Capabilities  | 
