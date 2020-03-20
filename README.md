@@ -2,7 +2,7 @@
 
 These set of scripts are designed to help your school quickly get up and running using Microsoft Teams. There is one script for creating Office 365 accounts for students and teachers. Another script for creating a Teams site for each class and assigning the teacher to it, and a final script for assigning the students to their classes.
 
-I realize that not everyone who is in need of the solution, is a PowerShell guru. So I have provided detailed steps below on how you can implement this for your school.
+I realize that not everyone who is in need of the solution, is a PowerShell guru. So I have provided detailed steps below on how you can implement this for your school. If you have any questions or issues with this script, please feel free to reach out to me on Twitter [@mdowst](https://twitter.com/MDowst).
 
 # Requirements
 - Global admin rights to the Office 365 tenant
