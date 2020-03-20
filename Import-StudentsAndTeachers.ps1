@@ -23,6 +23,16 @@ Connect-AzureAD
 $script:TenantDomain = Get-AzureADTenantDetail | Select-Object -ExpandProperty VerifiedDomains | Select-Object -Property Name, Capabilities  | 
     Out-GridView -Title 'Select email domain' -PassThru | Select-Object -ExpandProperty Name
 
+
+$Sku = @{
+    "M365EDU_A5_FACULTY" = "Office 365 A5 for faculty"
+    "M365EDU_A5_STUDENT" = "Office 365 A5 for students"
+    "M365EDU_A3_FACULTY" = "Office 365 A3 for faculty"
+    "M365EDU_A3_STUDENT" = "Office 365 A3 for students"
+    "M365EDU_A1_FACULTY" = "Office 365 A1 for faculty"
+    "M365EDU_A1_STUDENT" = "Office 365 A1 for students"
+}
+
 # Create the objects we'll need to add licenses
 $LicenseSku = Get-AzureADSubscribedSku | Select-Object @{l='License';e={$sku.Item($_.SkuPartNumber)}}, SkuPartNumber, @{l='Available';e={$_.PrepaidUnits.Enabled - $_.ConsumedUnits}},
     @{l='Purchased';e={$_.PrepaidUnits.Enabled}}, SkuID | Out-GridView -Title 'Select default license' -PassThru | Select-Object -ExpandProperty SkuID
@@ -232,7 +242,8 @@ foreach($user in $UserImport){
 }
 Write-Progress -Activity "Done" -Id 1 -Completed
 
-$exportCsv = Join-Path (Split-Path $csvPath) 'CreatedUsers.csv'
+$fileName = [System.IO.Path]::GetFileNameWithoutExtension($csvPath)
+$exportCsv = Join-Path (Split-Path $csvPath) "$($fileName)-imported.csv"
 $CreatedUsers | Export-Csv -Path $exportCsv -NoTypeInformation
 
 Write-Output "A list of the created accounts has been exported to '$exportCsv'.`nPlease use the UserPrincipalNames to map students and teachers to classes"
