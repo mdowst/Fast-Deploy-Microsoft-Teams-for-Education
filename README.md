@@ -33,7 +33,7 @@ To assign students to classes run the **Assign-Classes.ps1**, passing in the pat
 1. At the top of this page click the Clone of download button
 2. Select Download Zip
 
-![RepoDownload](Screenshots\RepoDownload.png)
+![RepoDownload](Screenshots/RepoDownload.png)
 
 3. When the download completed extract the zip file
 
@@ -58,23 +58,23 @@ Install-Module MicrosoftTeams -Scope CurrentUser
 .\Import-StudentsAndTeachers.ps1 -csvPath .\Import-Teachers.csv -defaultPassword 'AStrongPassword'
 ```
 
-![Import-Teachers](Screenshots\Import-Teachers.PNG)
+![Import-Teachers](Screenshots/Import-Teachers.PNG)
 
 4. You will see a prompt to enter your username and password for Office 365. Enter your username and password for your global admin account.
 
-![login](Screenshots\login.PNG)
+![login](Screenshots/login.PNG)
 
 5. Next you will be prompted to select the email domain for the users. Highlight the one you want to use and click OK
 
-![domain](Screenshots\domain.PNG)
+![domain](Screenshots/domain.PNG)
 
 6. Next you will be prompted to select the license to assign to the users. Highlight the one you want to use and click OK
 
-![license](Screenshots\license.PNG)
+![license](Screenshots/license.PNG)
 
 7. Once the import completes it will tell you where the exported CSV file is. You will need this later for creating the classes and assigning the students.
 
-![Import-Teachers-done](Screenshots\Import-Teachers-done.PNG)
+![Import-Teachers-done](Screenshots/Import-Teachers-done.PNG)
 
 8. Repeat the process above for the Import-Students.csv file.
 
@@ -89,12 +89,12 @@ Install-Module MicrosoftTeams -Scope CurrentUser
 
 4. You will see a prompt to enter your username and password for Office 365. Enter your username and password for your global admin account.
 
-![login](Screenshots\login.PNG)
+![login](Screenshots/login.PNG)
 
 5. You will see a list of the Team sites as they are created. The teacher will automatically be added as the Owner of the Team.
 
 
-![Create-ClassTeams](Screenshots\Create-ClassTeams.PNG)
+![Create-ClassTeams](Screenshots/Create-ClassTeams.PNG)
 
 ## Assign Students to Classes
 
@@ -107,8 +107,8 @@ Install-Module MicrosoftTeams -Scope CurrentUser
 
 4. You will see a prompt to enter your username and password for Office 365. Enter your username and password for your global admin account.
 
-![login](Screenshots\login.PNG)
+![login](Screenshots/login.PNG)
 
 5. Once the script completes you are finished.
 
-![Assign-Classes](Screenshots\Assign-Classes.png)
+![Assign-Classes](Screenshots/Assign-Classes.png)
