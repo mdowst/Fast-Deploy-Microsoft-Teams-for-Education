@@ -25,7 +25,7 @@ Once you have your user accounts created, you can now create a Team site for eac
 
 To import your classes simply run the **Create-ClassTeams.ps1**, passing in the path to your CSV file. One you start the script you will be prompted to enter your credentials, then it will start creating the Teams sites.
 
-# Create Team sites for Classes
+# Assign Students to Teams/Classes
 
 Now that you have your user accounts created and your Team sites setup, you can now assign students to thier class. To do this you need a CSV file with the name of the class and the UserPrincipalName of the student to assign to it. See the CSV Assign-Classes.csv for an example. 
 
