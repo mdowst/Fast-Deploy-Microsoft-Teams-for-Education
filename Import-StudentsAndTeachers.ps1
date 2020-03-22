@@ -1,13 +1,43 @@
-﻿[CmdletBinding()]
+﻿<#
+.SYNOPSIS
+Use this script to import a CSV for students or teachers to a Office 365 for education subscription
+
+.PARAMETER csvPath
+The full path to the CSV import file
+
+.PARAMETER UsageLocation
+A two letter country code (ISO standard 3166). Required for users that will be assigned licenses due 
+to legal requirement to check for availability of services in countries. 
+Examples include: "US", "JP", and "GB".
+For a complete list go to - https://www.iso.org/obp/ui/#search
+
+.EXAMPLE
+.\Import-StudentsAndTeachers.ps1 -csvPath .\Import-Teachers.csv
+
+Imports the Import-Teacher.csv file where the file is in the same folder as the script
+
+.EXAMPLE
+.\Import-StudentsAndTeachers.ps1 -csvPath C:\School-Hydration\Import-Students.csv
+
+Imports the Import-Students.csv file where the file is in a different folder then the script
+
+.EXAMPLE
+.\Import-StudentsAndTeachers.ps1 -csvPath .\Import-Teachers.csv -UsageLocation 'GB'
+
+Imports the CSV file where the file and sets the usage location to the United Kingdom
+
+#>
+[CmdletBinding()]
 [OutputType([string])]
 Param(
     [parameter(Mandatory=$true)]
     [String]$csvPath,
     
-    [parameter(Mandatory=$true)]
-    [String]$defaultPassword
+    [parameter(Mandatory=$false)]
+    [String]$UsageLocation = 'US'
 )
 
+# Check for the AzureAD module
 if(-not (Get-Module AzureAD)){
     if(Get-Module AzureAD -ListAvailable){
         Import-Module AzureAD
@@ -16,6 +46,10 @@ if(-not (Get-Module AzureAD)){
     }
 }
 
+# Connect to AzureAD
+try{ Get-AzureADCurrentSessionInfo -ErrorAction stop | Out-Null }
+catch{ Connect-AzureAD | Out-Null }
+
 $UserImport = Import-Csv -Path $csvPath
 
 $CheckRoles = $UserImport | Where-Object{ 'Teacher','Student','Faculty' -notcontains $_.Role }
@@ -23,8 +57,6 @@ if($CheckRoles){
     throw "Bad user roles found for the users. Roles should only be 'Teacher','Student','Faculty': $($CheckRoles | Out-String)"
 }
 
-# Connect to AzureAD
-Connect-AzureAD | Out-Null
 
 # set the domain for the username
 $script:TenantDomain = Get-AzureADTenantDetail | Select-Object -ExpandProperty VerifiedDomains | Select-Object -Property Name, Capabilities  | 
@@ -42,81 +74,15 @@ $Sku = @{
 
 # Create the objects we'll need to add licenses
 $LicenseSku = Get-AzureADSubscribedSku | Select-Object @{l='License';e={$sku.Item($_.SkuPartNumber)}}, SkuPartNumber, @{l='Available';e={$_.PrepaidUnits.Enabled - $_.ConsumedUnits}},
-    @{l='Purchased';e={$_.PrepaidUnits.Enabled}}, SkuID | Out-GridView -Title 'Select default license' -PassThru | Select-Object -ExpandProperty SkuID
+    @{l='Purchased';e={$_.PrepaidUnits.Enabled}}, SkuID | Out-GridView -Title 'Select default license' -PassThru
 
+# Get the naming pattern to use
+$NamePatterns = ('[{"Pattern":"F.L","Example":"Diana.Price"},
+    {"Pattern":"fL","Example":"DPrice"},{"Pattern":"F.m.L",
+    "Example":"Diana.L.Price"}]' | ConvertFrom-Json)
+$Pattern = $NamePatterns | Out-GridView -Title 'Select naming pattern' -PassThru | Select-Object -ExpandProperty Pattern
 
-
-Function New-Office365Person{
-<#
-.SYNOPSIS
-Creates the office 365 user account
-
-.PARAMETER FirstName
-The user’s first name.
-
-.PARAMETER MiddleName
-The user’s middle name.
-
-.PARAMETER LastName
-The user’s last name.
-
-.PARAMETER Password
-The user's password to set
-
-#>
-    [CmdletBinding()]
-    [OutputType([object])]
-    Param(
-        [parameter(Mandatory=$true)]
-        [String]$FirstName,
-        
-        [parameter(Mandatory=$false)]
-        [String]$MiddleName,
-        
-        [parameter(Mandatory=$true)]
-        [String]$LastName,
-        
-        [parameter(Mandatory=$true)]
-        [String]$Password,
-        
-        [parameter(Mandatory=$true)]
-        [String]$Role,
-        
-        [parameter(Mandatory=$true)]
-        [String]$LicenseSku
-    )
-
-    # determine user login name
-    $UserPrincipalName = Set-Office356UserName -First $FirstName -Middle $MiddleName -Last $LastName -Pattern $Pattern -TenantDomain $TenantDomain
-
-    $PasswordProfile=New-Object -TypeName Microsoft.Open.AzureAD.Model.PasswordProfile
-    $PasswordProfile.Password = $Password
-
-    # create the user
-    $userParams = @{
-        DisplayName = "$FirstName $LastName" 
-        GivenName = $FirstName
-        SurName = $LastName
-        UserPrincipalName = $UserPrincipalName
-        JobTitle = $Role
-        UsageLocation = 'US'
-        MailNickName = $FirstName
-        PasswordProfile = $PasswordProfile 
-        AccountEnabled = $true
-    }
-    $userObject = New-AzureADUser @userParams
-
-    # Set the license.
-    $license = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
-    $AssignedLicenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
-    $license.SkuId = $LicenseSku
-    $AssignedLicenses.AddLicenses = $license
-    Set-AzureADUserLicense -ObjectId $userObject.ObjectId -AssignedLicenses $AssignedLicenses | Out-Null
-
-    $userObject | Select-Object @{l='FirstName';e={$_.GivenName}}, @{l='LastName';e={$_.Surname}}, @{l='Role';e={$_.JobTitle}}, UserPrincipalName
-}
-
-Function Set-Office356UserName{
+Function Check-Office356UserName{
 <#
 .SYNOPSIS
 Use to determine a user's Office 365 username
@@ -161,13 +127,16 @@ include if there is a duplicate.
     [OutputType([string])]
     Param(
         [parameter(Mandatory=$true)]
-        [String]$First,
+        [String]$FirstName,
         
         [parameter(Mandatory=$false)]
-        [String]$Middle,
+        [String]$MiddleName,
         
         [parameter(Mandatory=$true)]
-        [String]$Last,
+        [String]$LastName,
+
+        [parameter(Mandatory=$false)]
+        [String]$UniqueId,
         
         [parameter(Mandatory=$true)]
         [String]$Pattern,
@@ -190,24 +159,24 @@ include if there is a duplicate.
 
     foreach ($item in $Pattern.ToCharArray()){
         if($item.Equals([char]'F')){
-            $username += $First
+            $username += $FirstName
         }
         elseif($item.Equals([char]'f')){
-            $username += $($First.ToCharArray())[$FirstInt]
+            $username += $($FirstName.ToCharArray())[$FirstInt]
             $FirstInt++
         }
-        elseif($item.Equals([char]'M') -and $Middle){
-            $username += $Middle
+        elseif($item.Equals([char]'M') -and $MiddleName){
+            $username += $MiddleName
         }
-        elseif($item.Equals([char]'m') -and $Middle){
-            $username += $($Middle.ToCharArray())[$MiddleInt]
+        elseif($item.Equals([char]'m') -and $MiddleName){
+            $username += $($MiddleName.ToCharArray())[$MiddleInt]
             $MiddleInt++
         }
         elseif($item.Equals([char]'L')){
-            $username += $Last
+            $username += $LastName
         }
         elseif($item.Equals([char]'l')){
-            $username += $($Last.ToCharArray())[$LastInt]
+            $username += $($LastName.ToCharArray())[$LastInt]
             $LastInt++
         }
         elseif($item -notmatch "[1-9a-zA-Z]"){
@@ -221,34 +190,93 @@ include if there is a duplicate.
     }
 
     $User = Get-AzureADUser -Filter "userPrincipalName eq '$($username)@$($TenantDomain)'"
-    if($User){
+    if(-not [string]::IsNullOrEmpty($UniqueId) -and $User.FacsimileTelephoneNumber -eq $UniqueId){
+        [pscustomobject]@{Exists=$true;UPN="$($username)@$($TenantDomain)"}
+    } elseif($User){
         $number++
-        Set-Office356UserName -First $First -Middle $Middle -Last $Last -Pattern $Pattern -digits $digits -number $number -TenantDomain $TenantDomain -IncludeNumber
+        if(-not $PSBoundParameters.ContainsKey('number')){
+            $PSBoundParameters.Add('number',$number)
+        } else {
+            $PSBoundParameters['number'] = $number
+        }
+
+        if(-not $PSBoundParameters.ContainsKey('IncludeNumber')){
+            $PSBoundParameters.Add('IncludeNumber',$true)
+        } 
+        Check-Office356UserName @PSBoundParameters
     }
     else{
-        "$($username)@$($TenantDomain)"
+        [pscustomobject]@{Exists=$false;UPN="$($username)@$($TenantDomain)"}
     }
 }
 
-$script:Pattern = 'F.L'
+
 # create the user accounts
 [System.Collections.Generic.List[PSObject]]$CreatedUsers = @()
 foreach($user in $UserImport){
     Write-Progress -Activity "Creating users" -Status "$($CreatedUsers.count) of $($UserImport.count)" -PercentComplete $(($($CreatedUsers.count)/$($UserImport.count))*100) -id 1
-    $Office365Person = @{
+
+    # determine user login name
+    $userCheck = @{
         FirstName = $user.FirstName
-        MiddleName = $user.MiddleName
         LastName = $user.LastName
-        Password = $defaultPassword
-        Role = $user.Role
-        LicenseSku = $LicenseSku
+        MiddleName = $UPNCheck.UPN
+        Pattern = $Pattern
+        TenantDomain = $TenantDomain
+        UniqueId = $user.id
     }
+    $UPNCheck = Check-Office356UserName @userCheck
+
+    if($UPNCheck.Exists -eq $true){
+        Write-Host "User account for '$($user.FirstName) $($user.LastName)' was found." -ForegroundColor Cyan
+        $userObject = Get-AzureADUser -ObjectId $UPNCheck.UPN
+        $AssignedSku = @(Get-AzureADUserLicenseDetail -ObjectId $userObject.ObjectId)[0].SkuPartNumber
+        if($sku.Item($AssignedSku)){
+            $AssignedSku = $sku.Item($AssignedSku)
+        }
+    } else {
+        Write-Host "Creating user account for '$($user.FirstName) $($user.LastName)'"
+        $PasswordProfile=New-Object -TypeName Microsoft.Open.AzureAD.Model.PasswordProfile
+        $PasswordProfile.Password = 'Welcome' + $user.id + '!'
+        $PasswordProfile.ForceChangePasswordNextLogin = $true
     
-    $newUser = New-Office365Person @Office365Person
+        # create the user
+        $userParams = @{
+            DisplayName = "$($user.FirstName) $($user.LastName)" 
+            GivenName = $user.FirstName
+            SurName = $user.LastName
+            UserPrincipalName = $UPNCheck.UPN
+            JobTitle = $user.Role
+            UsageLocation = $UsageLocation
+            MailNickName = "$($user.FirstName)$($user.LastName)"
+            PasswordProfile = $PasswordProfile 
+            AccountEnabled = $true
+            FacsimileTelephoneNumber = $user.id
+        }
+        $userObject = New-AzureADUser @userParams
+    
+        # Set the license.
+        $license = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
+        $AssignedLicenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
+        $license.SkuId = $LicenseSku.SkuID
+        $AssignedLicenses.AddLicenses = $license
+        try{
+            Set-AzureADUserLicense -ObjectId $userObject.ObjectId -AssignedLicenses $AssignedLicenses -ErrorAction Stop | Out-Null
+            $AssignedSku = $LicenseSku.License
+        } catch {
+            $AssignedSku = $null
+        }
+    }
+
+    $newUser = $userObject | Select-Object @{l='FirstName';e={$_.GivenName}}, @{l='LastName';e={$_.Surname}}, @{l='Role';e={$_.JobTitle}},
+        @{l='AssignedLicenses';e={$AssignedSku}}, @{l='Id';e={$_.FacsimileTelephoneNumber}}, @{l='Password';e={'Welcome' + $user.id + '!'}}, UserPrincipalName
+        
     $CreatedUsers.Add($newUser)
+    
 }
 Write-Progress -Activity "Done" -Id 1 -Completed
 
+# Export the results to a new CSV
 $fileName = [System.IO.Path]::GetFileNameWithoutExtension($csvPath)
 $exportCsv = Join-Path (Split-Path $csvPath) "$($fileName)-imported.csv"
 $CreatedUsers | Export-Csv -Path $exportCsv -NoTypeInformation
