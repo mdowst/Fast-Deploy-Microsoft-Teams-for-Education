@@ -40,7 +40,7 @@ To assign students to classes run the **Assign-Classes.ps1**, passing in the pat
 
 # Detailed Instructions
 
-These instructions assume that you are running Windows 10, and that you have an Office 365 for Education subscription from Microsoft. If you don't have a subscription, my colleague Cameron Fuller has written a blog post detailing how you can setup with a subscription for your school. You can find it here - [Camerons Post](TBD).
+These instructions assume that you are running Windows 10, and that you have an Office 365 for Education subscription from Microsoft. If you don't have a subscription, my colleague Cameron Fuller has written a blog post detailing how you can setup with a subscription for your school. You can find it here - [Cameron's Post](https://www.catapultsystems.com/blogs/how-to-build-your-school-in-microsoft-teams/).
 
 It uses PowerShell which is a task-based command-line shell and scripting language built into Windows. While they may work in some older versions of Windows, and even Mac or Linux, it is dependent on certain PowerShell versions, which Windows 10 has by default.
 
