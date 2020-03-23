@@ -1,4 +1,4 @@
-"FirstName","LastName","Role","AssignedLicenses","Id","UserPrincipalName"
-"Diana","Price","Teacher","Office 365 A5 for faculty","T1234","Diana.Price@M365EDU139224.onmicrosoft.com"
-"Michael","Hill","Teacher","Office 365 A5 for faculty","T5674","Michael.Hill@M365EDU139224.onmicrosoft.com"
-"Linda","Diaz","Teacher","Office 365 A5 for faculty","T9012","Linda.Diaz@M365EDU139224.onmicrosoft.com"
+"FirstName","LastName","Role","AssignedLicenses","Id","Password","UserPrincipalName"
+"Linda","Diaz","Teacher","Office 365 A5 for faculty","T9012","WelcomeT1234!","Linda.Diaz@M365EDU139224.onmicrosoft.com"
+"Linda","Diaz","Teacher","Office 365 A5 for faculty","T9012","WelcomeT5674!","Linda.Diaz@M365EDU139224.onmicrosoft.com"
+"Linda","Diaz","Teacher","Office 365 A5 for faculty","T9012","WelcomeT9012!","Linda.Diaz@M365EDU139224.onmicrosoft.com"
