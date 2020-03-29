@@ -322,15 +322,15 @@ The object that contains the classes to create Team sites for
     )
     $Wp = 0
     foreach($newTeam in $Classrooms){
-        Write-Progress -Activity "Creating class $($newTeam)" -Status "$wp of $($Classrooms.count)" -PercentComplete $(($wp/$($Classrooms.count))*100) -id 1
+        Write-Progress -Activity "Creating team: $($newTeam)" -Status "$wp of $($Classrooms.count)" -PercentComplete $(($wp/$($Classrooms.count))*100) -id 1
         
         $team = Get-Team | Where-Object{ $_.DisplayName -eq $newTeam }
         if(-not $team){
             $MailNickname = [regex]::Replace($newTeam,"[^0-9a-zA-Z]","")
             $team = New-Team -Alias $MailNickname -DisplayName $newTeam -Template EDU_Class 
-            Write-Host "`tCreated class $($newTeam)" -ForegroundColor Green
+            Write-Host "`tCreated team: $($newTeam)" -ForegroundColor Green
         } else {
-            Write-Host "`tConfirmed class $($newTeam)" -ForegroundColor Cyan
+            Write-Host "`tConfirmed team: $($newTeam)" -ForegroundColor Cyan
         }
         $team | Select-Object GroupId, @{l='DisplayName';e={$newTeam}}
         $wp++
@@ -455,4 +455,4 @@ $ImportedTeachers | Select-Object Id, FirstName, LastName, Role, @{l='Email';e={
 $ImportedStudents | Select-Object Id, FirstName, LastName, Role, @{l='Email';e={$_.UserPrincipalName}}, Password | 
     Export-Excel -Path $ExportPath -WorksheetName 'Students' 
 Write-Host "finshed" -ForegroundColor Green
-Write-Host "`nA list of the accounts has been exported to:`n`n$ExportPath `n`n"
+Write-Host "`nA list of the accounts has been exported to:`n`n`t$ExportPath `n`n"

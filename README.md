@@ -24,7 +24,21 @@ https://docs.microsoft.com/en-us/microsoft-365/education/intune-edu-trial/enable
 
 ![RepoDownload](Screenshots/RepoDownload.png)
 
-3. When the download completes, extract the zip file
+3. When the download completes, open the folder you downloaded it to.
+4. Right click on the Zip file, and select **Properties**.
+5. At the bottom on the General tab, check the box **Unblock**, and click **OK**. If you don't see the Unblock checkbox, then just continue to the next step.
+
+![unblock](Screenshots/unblock.png)
+
+6. Right click on the Zip file again, and select **Extract All...**.
+
+![extract1](Screenshots/extract1.png)
+
+7. Enter the folder you want to extract the files to, and click **OK**.
+
+![extract2](Screenshots/extract2.png)
+
+8. Once the extraction completes open the folder with the extracted files, and continue to the next section. 
 
 ## Building your school
 1. Open the **Fast Deploy Microsoft Teams for Education.xlsx** workbook in Excel.
