@@ -350,7 +350,7 @@ $ImportedTeachers = Import-StudentsAndTeachers -UserImport $Teachers -Role Teach
 Write-Host "Importing Students...."
 $ImportedStudents = Import-StudentsAndTeachers -UserImport $Students -Role Student -UsageLocation $UsageLocation
 
-Write-Host "Creating Team sites for the staff...."
+Write-Host "Creating Team site for the staff...."
 $StaffTeam = Import-ClassTeams -Classrooms "$School Staff"
 foreach($Teacher in $ImportedTeachers){
     try{
