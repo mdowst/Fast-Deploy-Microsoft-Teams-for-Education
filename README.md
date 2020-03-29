@@ -13,7 +13,8 @@ We realize that not everyone who is in need of the solution, is a technology gur
 - Office 365 Subscription with Education Licenses\
 *Note: If you don't have a subscription, my colleague Cameron Fuller has written a blog post detailing how you can setup with a subscription for your school. You can find it here - [Cameron's Post](https://www.catapultsystems.com/blogs/how-to-build-your-school-in-microsoft-teams/).*
 - Teams is enabled for your students and teachers.\
-See the [Students are unable to access Teams](#students-are-unable-to-access-teams) section for directions on doing this. 
+*Note: Follow the link below for directions on enabling Teams.*\
+https://docs.microsoft.com/en-us/microsoft-365/education/intune-edu-trial/enable-microsoft-teams
 
 # Getting Started
 
