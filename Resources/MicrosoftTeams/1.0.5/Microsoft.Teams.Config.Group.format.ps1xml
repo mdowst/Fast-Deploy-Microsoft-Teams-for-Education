@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <Name>Microsoft.Teams.Config.Cmdlets.Models.GroupAssignment</Name>
+      <ViewSelectedBy>
+        <TypeName>Microsoft.Teams.Config.Cmdlets.Models.GroupAssignment</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <ListItem>
+                <PropertyName>GroupId</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>PolicyType</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>PolicyName</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>Priority</PropertyName>
+                <Label>Rank</Label>
+              </ListItem>
+              <ListItem>
+                <PropertyName>CreatedTime</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>CreatedBy</PropertyName>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>
