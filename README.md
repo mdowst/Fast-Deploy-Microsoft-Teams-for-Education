@@ -4,7 +4,7 @@ This solution is designed to help small schools, co-ops, and tutors quickly get 
 
 This solution will help you creating logins and emails for all students and teachers, create a Teams site for each class, and assigning the teacher and students to the correct classes.
 
-We realize that not everyone who is in need of the solution, is a technology guru. So, we have tried to make it as simple as possible to implement this for your school. If you have any questions or issues with this solution, please feel free to reach out to me on Twitter [@mdowst](https://twitter.com/MDowst).
+We realize that not everyone who is in need of the solution is a technology guru. So we have tried to make it as simple as possible to implement this for your school. If you have any questions or issues with this solution, please feel free to reach out to me on Twitter [@mdowst](https://twitter.com/MDowst).
 
 # Overview
 ## Requirements
@@ -19,12 +19,12 @@ https://docs.microsoft.com/en-us/microsoft-365/education/intune-edu-trial/enable
 # Getting Started
 
 ## Download this solution
-1. At the top of this page click the Clone of download button
+1. At the top of this page click the **Clone of download** button
 2. Select Download Zip
 
 ![RepoDownload](Screenshots/RepoDownload.png)
 
-3. When the download completed extract the zip file
+3. When the download completes, extract the zip file
 
 ## Building your school
 1. Open the **Fast Deploy Microsoft Teams for Education.xlsx** workbook in Excel.
@@ -63,7 +63,7 @@ https://docs.microsoft.com/en-us/microsoft-365/education/intune-edu-trial/enable
 
 5. Depending on your subscription and licenses you may receive some additional prompts. If you don't match any of the conditions below, the solution will just continue on. 
     1. __Select email domain__: If your subscription contains more than one email domain, then you will be prompted to select which one to assigned to the users being created.
-    2. __Select naming pattern__: If for some reason is cannot find the naming pattern in the workbook, it will prompt you for it.
+    2. __Select naming pattern__: If, for some reason, it cannot find the naming pattern in the workbook, it will prompt you for it.
 6. The solution will then start building your school. Once it is finished you are all set.
 
 ![upload-finished](Screenshots/upload-finished.png)
@@ -81,7 +81,7 @@ https://docs.microsoft.com/en-us/microsoft-365/education/intune-edu-trial/enable
 
 
 ## Teams and video focus
-**Issue/Question:** Teams is currently limited to only 4 videos at a time and cannot go beyond that. This is difficult when teach a class because the instructor can’t watch all students such as when they are taking a test or during class to see if they are paying attention. 
+**Issue/Question:** Teams is currently limited to only 4 videos at a time and cannot go beyond that. This is difficult when teaching a class, because the instructor can’t watch all students such as when they are taking a test or during class to see if they are paying attention. 
 
 **Workaround:** For now, the best option appears to be to pin a video for the specific students you want to keep an eye on. 
 **Current state:** This is #1 on feedback request, especially for teachers, so Microsoft is aware of this and are working on a solution.
