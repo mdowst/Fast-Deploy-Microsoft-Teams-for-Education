@@ -55,6 +55,7 @@ If($FoundDomains.Count -gt 1){
 }
 Write-Host "$script:TenantDomain" -ForegroundColor Green
 
+Write-Host "Determine naming pattern..." -NoNewline
 # Get the naming pattern to use
 $script:Pattern = Import-Excel -Path $WorkbookPath -WorksheetName 'School Details' -NoHeader -StartRow 5 -EndRow 5 -EndColumn 4 -StartColumn 4 | 
     Select-Object  @{l='Pattern';e={$_.P1.Split()[0]}} | Select-Object -ExpandProperty Pattern
@@ -64,7 +65,9 @@ if([string]::IsNullOrEmpty($script:Pattern)){
     $NamePatterns = ('[{"Pattern":"First.Last","Example":"Diana.Price"},{"Pattern":"FLast","Example":"DPrice"}]' | ConvertFrom-Json)
     $script:Pattern = $NamePatterns | Out-GridView -Title 'Select naming pattern' -PassThru | Select-Object -ExpandProperty Pattern
 }
+Write-Host "$script:Pattern" -ForegroundColor Green
 
+Write-Host "Determine the usage location..." -NoNewline
 # Get the naming pattern to use
 $UsageLocation = Import-Excel -Path $WorkbookPath -WorksheetName 'School Details' -NoHeader -StartRow 7 -EndRow 7 -EndColumn 5 -StartColumn 5 | 
     Select-Object -ExpandProperty P1
@@ -73,6 +76,7 @@ $UsageLocation = Import-Excel -Path $WorkbookPath -WorksheetName 'School Details
 if([string]::IsNullOrEmpty($UsageLocation)){
     $UsageLocation = 'US'
 }
+Write-Host "$UsageLocation" -ForegroundColor Green
 
 Function Import-StudentsAndTeachers {
 <#
