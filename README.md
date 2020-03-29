@@ -29,20 +29,20 @@ See the [Students are unable to access Teams](#students-are-unable-to-access-tea
 1. Open the **Fast Deploy Microsoft Teams for Education.xlsx** workbook in Excel.
 2. On the **School Details** sheet, enter your school's name, choose a naming convention for your logins, and select the country you are in.
 
-![School](Screenshots/School.PNG)
+![School](Screenshots/School.png)
 
 3. On the **Teachers** sheet, enter the first and last name of your teachers.
 
-![Teachers](Screenshots/Teachers.PNG)
+![Teachers](Screenshots/Teachers.png)
 
 4. On the **Students** sheet, enter the first and last name of your students.
 
-![Students](Screenshots/Students.PNG)
+![Students](Screenshots/Students.png)
 
 5. On the **Classes** sheet, enter the name of the class, then use the dropdowns to assign the teachers and students.\
 *Note: Class names must be unique, and only need to be entered once. All teachers and student listed in the rows below will be added to that class.*
 
-![Classes](Screenshots/Classes.PNG)
+![Classes](Screenshots/Classes.png)
 
 6. Once you've entered all your information, save and close the workbook.
 
@@ -50,22 +50,22 @@ See the [Students are unable to access Teams](#students-are-unable-to-access-tea
 1. Double-click on the file **Start-Upload.bat**.
 2. When the file starts you will be prompted to confirm you've already filled out the **Fast Deploy Microsoft Teams for Education.xlsx** workbook. Enter **Y** and press **Enter** to continue.
 
-![confirmation](Screenshots/confirmation.PNG)
+![confirmation](Screenshots/confirmation.png)
 
 3. Next you will be prompted for your username and password. This is the username and password for your Office 365 subscription. The username will most likely end with .onmicrosoft.com.
 
-![credentials](Screenshots/credentials.PNG)
+![credentials](Screenshots/credentials.png)
 
 4. The solution will then attempt to connect to the different Microsoft services, and start building your school.
 
-![upload-start](Screenshots/upload-start.PNG)
+![upload-start](Screenshots/upload-start.png)
 
 5. Depending on your subscription and licenses you may receive some additional prompts. If you don't match any of the conditions below, the solution will just continue on. 
     1. __Select email domain__: If your subscription contains more than one email domain, then you will be prompted to select which one to assigned to the users being created.
     2. __Select naming pattern__: If for some reason is cannot find the naming pattern in the workbook, it will prompt you for it.
 6. The solution will then start building your school. Once it is finished you are all set.
 
-![upload-finished](Screenshots/upload-finished.PNG)
+![upload-finished](Screenshots/upload-finished.png)
 
 
 # Making Changes
