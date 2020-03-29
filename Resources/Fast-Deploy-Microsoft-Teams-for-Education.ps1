@@ -338,6 +338,8 @@ The object that contains the classes to create Team sites for
 }
 
 Write-Host "Gathering data from spreadsheet..." -NoNewline
+$School = Import-Excel -Path $WorkbookPath -WorksheetName 'School Details' -NoHeader -StartRow 3 -EndRow 3 -EndColumn 4 -StartColumn 4 | 
+    Select-Object -ExpandProperty P1
 $Teachers = Import-Excel -Path $WorkbookPath -WorksheetName 'Teachers' -StartRow 3 | Where-Object { -not [string]::IsNullOrEmpty($_.Lookup) }
 $Students = Import-Excel -Path $WorkbookPath -WorksheetName 'Students' -StartRow 3 | Where-Object { -not [string]::IsNullOrEmpty($_.Lookup) }
 $Classes  = Import-Excel -Path $WorkbookPath -WorksheetName 'Classes'  -StartRow 3 | Where-Object { -not [string]::IsNullOrEmpty($_.Lookup) }
@@ -347,6 +349,22 @@ Write-Host "Importing Teachers...."
 $ImportedTeachers = Import-StudentsAndTeachers -UserImport $Teachers -Role Teacher -UsageLocation $UsageLocation
 Write-Host "Importing Students...."
 $ImportedStudents = Import-StudentsAndTeachers -UserImport $Students -Role Student -UsageLocation $UsageLocation
+
+Write-Host "Creating Team sites for the staff...."
+$StaffTeam = Import-ClassTeams -Classrooms "$School Staff"
+foreach($Teacher in $ImportedTeachers){
+    try{
+        Add-TeamUser -GroupId $StaffTeam.GroupId -User $Teacher.UserPrincipalName -Role Member -ErrorAction Stop
+        Write-Host "`tAdded $($Teacher.Lookup.Split('-')[0].Trim())" -ForegroundColor Green
+    } catch {
+        if($_.Exception.Message -like '*One or more added object references already exist for the following modified properties:*'){
+            Write-Host "`tConfirmed $($Teacher.Lookup.Split('-')[0].Trim())" -ForegroundColor Cyan
+        } else {
+            Write-Host "Error adding $($Teacher.Lookup.Split('-')[0].Trim())" -ForegroundColor Red
+            $_
+        }
+    }
+}
 
 Write-Host "Creating Team sites for each class...."
 $Classrooms = $Classes | Where-Object { -not [string]::IsNullOrEmpty($_.'Class Name') } | Select-Object -ExpandProperty 'Class Name'
@@ -366,7 +384,7 @@ foreach($class in $ImportedClasses){
         }
         
         try{
-            Add-TeamUser -GroupId $class.GroupId -User $UserPrincipalName -Role Member -ErrorAction Stop
+            Add-TeamUser -GroupId $class.GroupId -User $UserPrincipalName -Role Owner -ErrorAction Stop
             Write-Host "`tAdded $($Teacher.Split('-')[0].Trim())" -ForegroundColor Green
         } catch {
             if($_.Exception.Message -like '*One or more added object references already exist for the following modified properties:*'){
@@ -396,17 +414,16 @@ foreach($class in $ImportedClasses){
                 Write-Host "Error adding $($student.Split('-')[0].Trim())" -ForegroundColor Red
             }
         }
-    }
-
-    
+    } 
 }
 Write-Progress -Activity "Done" -Id 1 -Completed
+
 
 # Enable schedules to show in Teams
 $timer =  [system.diagnostics.stopwatch]::StartNew()
 
 Write-Host "Apply calendar fix for classes"
-foreach($class in $ImportedClasses){
+foreach($class in @($ImportedClasses) + @($StaffTeam)){
     $timer.Restart()
     do{
         $GroupCheck = Get-UnifiedGroup -Identity $class.GroupId -ErrorAction SilentlyContinue
@@ -414,7 +431,7 @@ foreach($class in $ImportedClasses){
         if($timer.Elapsed.TotalSeconds -gt 30){break}
         elseif(-not $GroupCheck){
             Start-Sleep -Seconds 5
-            Write-Host "The exchange group for $($class.DisplayName) could not be found. Will recheck in 5 seconds." -ForegroundColor Yellow
+            #Write-Host "The exchange group for $($class.DisplayName) could not be found. Will recheck in 5 seconds." -ForegroundColor Yellow
         }
     }while(-not $GroupCheck)
     
@@ -427,3 +444,15 @@ foreach($class in $ImportedClasses){
 }
 Remove-PSSession -Session $PS_Session
 
+# Export the results to a new Excel workbook
+$fileName = [System.IO.Path]::GetFileNameWithoutExtension($WorkbookPath)
+$ExportPath = Join-Path (Split-Path $WorkbookPath) "$($School)-imported.xlsx"
+
+
+Write-Host "Exporting results to Excel..." -NoNewline
+$ImportedTeachers | Select-Object Id, FirstName, LastName, Role, @{l='Email';e={$_.UserPrincipalName}}, Password | 
+    Export-Excel -Path $ExportPath -WorksheetName 'Teachers' 
+$ImportedStudents | Select-Object Id, FirstName, LastName, Role, @{l='Email';e={$_.UserPrincipalName}}, Password | 
+    Export-Excel -Path $ExportPath -WorksheetName 'Students' 
+Write-Host "finshed" -ForegroundColor Green
+Write-Host "`nA list of the accounts has been exported to:`n`n$ExportPath `n`n"

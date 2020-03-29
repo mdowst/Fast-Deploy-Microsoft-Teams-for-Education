@@ -64,7 +64,7 @@ https://docs.microsoft.com/en-us/microsoft-365/education/intune-edu-trial/enable
 5. Depending on your subscription and licenses you may receive some additional prompts. If you don't match any of the conditions below, the solution will just continue on. 
     1. __Select email domain__: If your subscription contains more than one email domain, then you will be prompted to select which one to assigned to the users being created.
     2. __Select naming pattern__: If, for some reason, it cannot find the naming pattern in the workbook, it will prompt you for it.
-6. The solution will then start building your school. Once it is finished you are all set.
+6. Once it is finished you can find a list of the usernames and passwords to need to provide to your teachers and students. The password is set so they will be required to change it the first time they login.
 
 ![upload-finished](Screenshots/upload-finished.png)
 
