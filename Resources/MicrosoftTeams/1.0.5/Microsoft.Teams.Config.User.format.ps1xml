@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <Name>Microsoft.Teams.Config.Cmdlets.Models.EffectivePolicy</Name>
+      <ViewSelectedBy>
+        <TypeName>Microsoft.Teams.Config.Cmdlets.Models.EffectivePolicy</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <ListItem>
+                <PropertyName>PolicyType</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>PolicyName</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>PolicySource</Label>
+                <ScriptBlock>[String]::Format("{0} {1}", $_.PolicySource[0].AssignmentType, $_.PolicySource[0].Reference)</ScriptBlock>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+    <View>
+      <Name>Microsoft.Teams.Config.Cmdlets.Models.SourceEntry</Name>
+      <ViewSelectedBy>
+        <TypeName>Microsoft.Teams.Config.Cmdlets.Models.SourceEntry</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <ListItem>
+                <PropertyName>AssignmentType</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>PolicyType</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>PolicyName</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>Reference</PropertyName>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

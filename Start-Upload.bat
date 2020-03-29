@@ -1,0 +1,1 @@
+powershell.exe -ExecutionPolicy ByPass -noexit -File "%~dp0Resources\Fast-Deploy-Microsoft-Teams-for-Education.ps1" -WorkbookPath "%~dp0Fast Deploy Microsoft Teams for Education.xlsx"

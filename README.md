@@ -1,162 +1,102 @@
 # Fast Deploy Microsoft Teams for Education
 
-These set of scripts are designed to help small schools, co-ops, and tutors quickly get up and running using Microsoft Teams. If you are a large school with your own IT staff, you are welcome to use this as well, but the official [School Data Sync](https://sds.microsoft.com/) from Microsoft might be a better option for you. 
+This solution is designed to help small schools, co-ops, and tutors quickly get up and running using Microsoft Teams. If you are a large school with your own IT staff, you are welcome to use this as well, but the official [School Data Sync](https://sds.microsoft.com/) from Microsoft might be a better option for you. 
 
 This solution will help you creating logins and emails for all students and teachers, create a Teams site for each class, and assigning the teacher and students to the correct classes.
 
-I realize that not everyone who is in need of the solution, is a PowerShell guru. So I have provided detailed steps below on how you can implement this for your school. If you have any questions or issues with this script, please feel free to reach out to me on Twitter [@mdowst](https://twitter.com/MDowst).
+We realize that not everyone who is in need of the solution is a technology guru. So we have tried to make it as simple as possible to implement this for your school. If you have any questions or issues with this solution, please feel free to reach out to me on Twitter [@mdowst](https://twitter.com/MDowst).
 
 # Overview
 ## Requirements
-- Global admin rights to the Office 365 tenant
-- [AzureAD PowerShell Module](https://www.powershellgallery.com/packages/AzureAD/2.0.2.4)
-- [MicrosoftTeams PowerShell Module](https://www.powershellgallery.com/packages/MicrosoftTeams/1.0.5)
+- Microsoft Excel
+- Windows 10
+- Office 365 Subscription with Education Licenses\
+*Note: If you don't have a subscription, my colleague Cameron Fuller has written a blog post detailing how you can setup with a subscription for your school. You can find it here - [Cameron's Post](https://www.catapultsystems.com/blogs/how-to-build-your-school-in-microsoft-teams/).*
+- Teams is enabled for your students and teachers.\
+*Note: Follow the link below for directions on enabling Teams.*\
+https://docs.microsoft.com/en-us/microsoft-365/education/intune-edu-trial/enable-microsoft-teams
 
-Don't worry if you don't know what this means. Instructions for installing them are provided in the detail instructions below.
+# Getting Started
 
-## Importing Students and Teachers
-
-Students and teachers are both imported using the same script. If you already have Office 365 accounts for your students and teachers, you can skip this step and go to the class creation scripts. If you are assigning different licenses to teacher and students, it is recommended that you create separate files for teachers and students, then run the script once for each. See the sample CSV file Import-Teachers.csv and Import-Students.csv for examples of how to format your data. You only need to enter their first and last name and if they are a teacher, student, or faculty. The middle name is optional. The Id field is also optional, but highly recommended. The usernames will be auto-generated and if two people have the same name, a number will appended to the end of their username. The Id field is used as a check to prevent you from accidentally creating duplicate accounts, in a situation where you imported the same person twice.
-
-When the start the script you will be prompted to enter your credentials for your Office 365 tenant, to choose the email domain, the licenses you want to assign, and the naming pattern to use. You have 3 choices for the naming pattern these are:
-
-- **F.L**: First name (period/full stop) Last name. ex. Diana.Price
-- **fL**: First initial Last name. ex. DPrice
-- **F.m.L**: First name (period/full stop) Middle initial (period/full stop) Last name. ex. Diana.L.Price
-
-When the script completes it will output a second CSV file in the same path as the original with "-imported" appended to the file name. This file will contain the UserPrincipalName for each account created. You will use this UserPrincipalName to assign the teachers and students to their correct classes.
-
-## Create Team sites for Classes
-
-Once you have your user accounts created, you can now create a Team site for each class. All you need to do is provide a CSV file with the name of the class and the teacher. Each class name must be unique, and the teacher value must be the UserPrincipalName that was created by the import process and found in the CSV it exported. See the CSV Create-ClassTeams.csv for an example. 
-
-To import your classes simply run the **Create-ClassTeams.ps1**, passing in the path to your CSV file. One you start the script you will be prompted to enter your credentials, then it will start creating the Teams sites.
-
-## Assign Students to Classes
-
-Now that you have your user accounts created and your Team sites setup, you can now assign students to their classes. To do this you need a CSV file with the name of the class and the UserPrincipalName of the student to assign to it. See the CSV Assign-Classes.csv for an example. 
-
-To assign students to classes run the **Assign-Classes.ps1**, passing in the path to your CSV file. One you start the script you will be prompted to enter your credentials, then it will go through and assign all the student to their classes.
-
-# Detailed Instructions
-
-These instructions assume that you are running Windows 10, and that you have an Office 365 for Education subscription from Microsoft. If you don't have a subscription, my colleague Cameron Fuller has written a blog post detailing how you can setup with a subscription for your school. You can find it here - [Camerons Post](TBD).
-
-It uses PowerShell which is a task-based command-line shell and scripting language built into Windows. While they may work in some older versions of Windows, and even Mac or Linux, it is dependent on certain PowerShell versions, which Windows 10 has by default.
-
-PowerShell and the PowerShell modules required by this solution are created and maintained by Microsoft and are of free. This solution is open to the public and is also free of charge. You do not need to purchase any software to use this solution.
-
-Note: Any time you see to enter a command in the instructions, assume that you will need to press the **Enter** key afterwards.
-
-## Download Scripts
-1. At the top of this page click the Clone of download button
+## Download this solution
+1. At the top of this page click the **Clone of download** button
 2. Select Download Zip
 
 ![RepoDownload](Screenshots/RepoDownload.png)
 
-3. When the download completed extract the zip file
+3. When the download completes, open the folder you downloaded it to.
+4. Right click on the Zip file, and select **Properties**.
+5. At the bottom on the General tab, check the box **Unblock**, and click **OK**. If you don't see the Unblock checkbox, then just continue to the next step.
 
-## Starting PowerShell
-Option 1 - From Start Menu
-1. Click **Start**
-2. Type **PowerShell**
-3. Click **Windows PowerShell**
+![unblock](Screenshots/unblock.png)
 
-Option 2 - From Run
-1. Press simultaneously the **Windows** and **R** on your keyboard
-2. Type **PowerShell**
-3. Click **OK** or press **Enter**
+6. Right click on the Zip file again, and select **Extract All...**.
 
-## Navigate to the folder with the script files
-1. In the PowerShell console enter the command "cd" followed by the path to the folder you extracted. For example:
-```powershell
-cd "C:\Users\user\Downloads\Fast-Deploy-Microsoft-Teams-for-Education-master"
-```
+![extract1](Screenshots/extract1.png)
 
-![folder](Screenshots/folder.png)
+7. Enter the folder you want to extract the files to, and click **OK**.
 
-2. To ensure you are in the correct place type ```dir```. You should see the names of the ps1 and csv files listed.
+![extract2](Screenshots/extract2.png)
 
-![dir](Screenshots/dir.png)
+8. Once the extraction completes open the folder with the extracted files, and continue to the next section. 
 
-## Install Required Modules
-1. Open PowerShell console (click Start > type in "PowerShell" > hit enter)
-2. Install the Azure AD module using the command:
-```powershell
-Install-Module AzureAD -Scope CurrentUser
-```
-3. If prompt to trust repository enter ```Y``` for Yes.
-4. Install the Microsoft Teams module using the command:
-```powershell
-Install-Module MicrosoftTeams -Scope CurrentUser
-```
-5. Again, if prompt to trust repository enter Y for Yes.
+## Building your school
+1. Open the **Fast Deploy Microsoft Teams for Education.xlsx** workbook in Excel.
+2. On the **School Details** sheet, enter your school's name, choose a naming convention for your logins, and select the country you are in.
 
-## Import Teachers and Students
-Before beginning ensure you have reviewed the [Importing Students and Teachers](#importing-students-and-teachers) section of the Overview to ensure you to properly created your import CSV files.
-1. Open the Import-Teachers.csv and Import-Students.csv in Excel and enter the information for your school.
-2. Save a close the CSV files.
-3. In the PowerShell console ensure you are in the folder you extracted the zipped files to.
-4. Start the teacher import by running the command below. If your CSV is in the same folder as your script you can leave the path as .\\. Otherwise you will need to provide the full path.
-```powershell
-.\Import-StudentsAndTeachers.ps1 -csvPath .\Import-Teachers.csv -defaultPassword 'AStrongPassword'
-```
+![School](Screenshots/School.png)
 
-![Import-Teachers](Screenshots/Import-Teachers.PNG)
+3. On the **Teachers** sheet, enter the first and last name of your teachers.
 
-5. You will see a prompt to enter your username and password for Office 365. Enter your username and password for your global admin account.
+![Teachers](Screenshots/Teachers.png)
 
-![login](Screenshots/login.PNG)
+4. On the **Students** sheet, enter the first and last name of your students.
 
-6. Next you will be prompted to select the email domain for the users. Highlight the one you want to use and click OK
+![Students](Screenshots/Students.png)
 
-![domain](Screenshots/domain.PNG)
+5. On the **Classes** sheet, enter the name of the class, then use the dropdowns to assign the teachers and students.\
+*Note: Class names must be unique, and only need to be entered once. All teachers and student listed in the rows below will be added to that class.*
 
-7. Next you will be prompted to select the license to assign to the users. Highlight the one you want to use and click OK
+![Classes](Screenshots/Classes.png)
 
-![license](Screenshots/license.PNG)
+6. Once you've entered all your information, save and close the workbook.
 
-8. Next you will be prompted to select the naming convention to use for you user accounts. Highlight the one you want to use and click OK
+## Uploading your school's information
+1. Double-click on the file **Start-Upload.bat**.
+2. When the file starts you will be prompted to confirm you've already filled out the **Fast Deploy Microsoft Teams for Education.xlsx** workbook. Enter **Y** and press **Enter** to continue.
 
-![namingpattern](Screenshots/namingpattern.png)
+![confirmation](Screenshots/confirmation.png)
 
-9. Once the import completes it will tell you where the exported CSV file is. You will need this later for creating the classes and assigning the students.
+3. Next you will be prompted for your username and password. This is the username and password for your Office 365 subscription. The username will most likely end with .onmicrosoft.com.
 
-![Import-Teachers-done](Screenshots/Import-Teachers-done.PNG)
+![credentials](Screenshots/credentials.png)
 
-10. Repeat the process above for the Import-Students.csv file.
+4. The solution will then attempt to connect to the different Microsoft services, and start building your school.
 
-## Create Class Teams
-Before beginning ensure you have reviewed the [Create Team sites for Classes](#Create-Team-sites-for-Classes) section of the Overview to ensure you to properly created your import CSV files.
-1. Open the Create-ClassTeams.csv in Excel and enter the information for your school. The class names should all be unique and the value in the teacher column should be the UserPrincipalName found in the export file from the teacher import. 
-2. In the PowerShell console ensure you are in the folder you extracted the zipped files to.
-3. Start the class creation by running the command below. If your CSV is in the same folder as your script you can leave the path as .\\. Otherwise you will need to provide the full path.
-```powershell
-.\Create-ClassTeams.ps1 -csvPath .\Create-ClassTeams.csv
-```
+![upload-start](Screenshots/upload-start.png)
 
-4. You will see a prompt to enter your username and password for Office 365. Enter your username and password for your global admin account.
+5. Depending on your subscription and licenses you may receive some additional prompts. If you don't match any of the conditions below, the solution will just continue on. 
+    1. __Select email domain__: If your subscription contains more than one email domain, then you will be prompted to select which one to assigned to the users being created.
+    2. __Select naming pattern__: If, for some reason, it cannot find the naming pattern in the workbook, it will prompt you for it.
+6. Once it is finished you can find a list of the usernames and passwords to need to provide to your teachers and students. The password is set so they will be required to change it the first time they login.
 
-![login](Screenshots/login.PNG)
-
-5. You will see a list of the Team sites as they are created. The teacher will automatically be added as the Owner of the Team.
+![upload-finished](Screenshots/upload-finished.png)
 
 
-![Create-ClassTeams](Screenshots/Create-ClassTeams.PNG)
+# Making Changes
+This solution is designed to be run multiple times. If you have additional teachers, students, or classes to add, simply add them to the **Fast Deploy Microsoft Teams for Education.xlsx** workbook and run the **Start-Upload.bat** again. As long as the Teacher # and Student # do not change no user will be duplicated. This solution also only adds, it will never remove or change an existing user or Team site.  
 
-## Assign Students to Classes
+# FAQ and Known Issues
+## Students are unable to access Teams
+**Issue/Question:** Some students may see a message that says, "You're missing out!" or "Ask your admin to enable Microsoft Teams for..."
 
-1. Open the Assign-Classes.csv in Excel and enter the information for your school. The class names should match the names from the Create-ClassTeams.csv and the value in the student column should be the UserPrincipalName found in the export file from the student import. 
-2. In the PowerShell console ensure you are in the folder you extracted the zipped files to.
-3. Start the class assignment below by running the command below. If your CSV is in the same folder as your script you can leave the path as .\\. Otherwise you will need to provide the full path.
-```powershell
-.\Assign-Classes.ps1 -csvPath .\Assign-Classes.csv
-```
+**Resolution:** Be sure to Enable Microsoft Teams for your school. In EDU tenants, Teams isn't enabled by default; you'll have to turn it on first. Follow the link below for direction on how to enable Teams.
+https://docs.microsoft.com/en-us/microsoft-365/education/intune-edu-trial/enable-microsoft-teams
 
-4. You will see a prompt to enter your username and password for Office 365. Enter your username and password for your global admin account.
 
-![login](Screenshots/login.PNG)
+## Teams and video focus
+**Issue/Question:** Teams is currently limited to only 4 videos at a time and cannot go beyond that. This is difficult when teaching a class, because the instructor can’t watch all students such as when they are taking a test or during class to see if they are paying attention. 
 
-5. Once the script completes you are finished.
+**Workaround:** For now, the best option appears to be to pin a video for the specific students you want to keep an eye on. 
+**Current state:** This is #1 on feedback request, especially for teachers, so Microsoft is aware of this and are working on a solution.
 
-![Assign-Classes](Screenshots/Assign-Classes.png)
